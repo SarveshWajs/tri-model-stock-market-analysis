@@ -86,8 +86,7 @@ df = preprocess_data(df)
 # Task 1: Regression - Stock Price Prediction
 if task == "Prediction":
     st.subheader(f"Stock Price Prediction for META")
-    features = ['Open', 'High', 'Low', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 'SMA_5', 
-                'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 'VWAP', 'Volatility']
+    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'SMA_5', 'SMA_20', 'Lag_1', 'Lag_3', 'Volatility']
     
     # Select the latest row for prediction
     X_new = df[features].iloc[-1].values.reshape(1, -1)
@@ -101,9 +100,7 @@ if task == "Prediction":
 elif task == "Classification":
     st.subheader(f"Price Movement Classification for META")
     
-    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
-                'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
-                'VWAP', 'Daily_Return', 'Volatility']
+    features = ['Open', 'High', 'Low', 'Close', 'Lag_7']
     
     X_new = df[features].iloc[-1].values.reshape(1, -1)
     prediction = rf_classifier.predict(X_new)
