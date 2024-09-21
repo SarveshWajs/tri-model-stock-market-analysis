@@ -82,6 +82,9 @@ def preprocess_data(df):
 # Preprocess the data
 df = preprocess_data(df)
 
+# Display historical stock prices
+st.line_chart(df.set_index('Date')['Close'])
+
 # Task 1: Regression - Stock Price Prediction
 if task == "Prediction":
     st.subheader(f"Stock Price Prediction for META")
@@ -93,7 +96,9 @@ if task == "Prediction":
     # Make a prediction
     predicted_price_scaled = lin_reg_model.predict(X_new)
     predicted_price = close_scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
-    st.write(f"Predicted closing price for tomorrow: ${predicted_price[0][0]:.2f}")
+    
+    # Use st.metric for a more visual display of the prediction
+    st.metric(label="Predicted Closing Price for Tomorrow", value=f"${predicted_price[0][0]:.2f}")
 
 # Task 2: Classification - Price Movement Prediction
 elif task == "Classification":
