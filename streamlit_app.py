@@ -4,6 +4,8 @@ import yfinance as yf
 import joblib
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
+from ta.volatility import BollingerBands
+from ta.momentum import RSIIndicator
 
 # Load pre-trained models
 rf_classifier = joblib.load('rf_model.pkl')         # Classification model (Random Forest)
@@ -28,16 +30,47 @@ st.write(df)
 
 # Preprocess stock data for model usage
 def preprocess_data(df):
+    # Adding technical indicators and other features
     df['Lag_1'] = df['Close'].shift(1)
+    df['Lag_3'] = df['Close'].shift(3)
+    df['Lag_7'] = df['Close'].shift(7)
+    
     df['SMA_5'] = df['Close'].rolling(window=5).mean()
     df['SMA_20'] = df['Close'].rolling(window=20).mean()
+    df['EMA_20'] = df['Close'].ewm(span=20, adjust=False).mean()
+    
+    # RSI (14-day period)
+    rsi_indicator = RSIIndicator(df['Close'], window=14)
+    df['RSI_14'] = rsi_indicator.rsi()
+    
+    # Bollinger Bands (20-day period)
+    bb_indicator = BollingerBands(df['Close'], window=20, window_dev=2)
+    df['BB_High'] = bb_indicator.bollinger_hband()
+    df['BB_Low'] = bb_indicator.bollinger_lband()
+    
+    # VWAP calculation (Cumulative sum of volume-weighted price / cumulative volume)
+    df['VWAP'] = (df['Close'] * df['Volume']).cumsum() / df['Volume'].cumsum()
+    
+    # Price Up: Binary indicator for classification (1 if price is up, 0 if down)
+    df['Price_Up'] = (df['Close'].shift(-1) > df['Close']).astype(int)
+    
+    # Daily return calculation
+    df['Daily_Return'] = df['Close'].pct_change()
+    
+    # Volatility: Difference between high and low price
     df['Volatility'] = df['High'] - df['Low']
+    
+    # Handle missing values
     df = df.fillna(method='ffill').fillna(method='bfill')
     
     # Feature scaling
     scaler = MinMaxScaler()
-    df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']] = scaler.fit_transform(
-        df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']]
+    df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
+        'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
+        'VWAP', 'Daily_Return', 'Volatility']] = scaler.fit_transform(
+        df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
+            'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
+            'VWAP', 'Daily_Return', 'Volatility']]
     )
     
     return df
@@ -48,7 +81,8 @@ df = preprocess_data(df)
 # Task 1: Regression - Stock Price Prediction
 if task == "Prediction":
     st.subheader(f"Stock Price Prediction for META")
-    features = ['Open', 'High', 'Low', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
+    features = ['Open', 'High', 'Low', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 'SMA_5', 
+                'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 'VWAP', 'Volatility']
     
     # Select the latest row for prediction
     X_new = df[features].iloc[-1].values.reshape(1, -1)
@@ -62,8 +96,9 @@ if task == "Prediction":
 elif task == "Classification":
     st.subheader(f"Price Movement Classification for META")
     
-    # Assuming target is to classify Price Up (1) or Down (0)
-    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
+    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
+                'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
+                'VWAP', 'Daily_Return', 'Volatility']
     
     X_new = df[features].iloc[-1].values.reshape(1, -1)
     prediction = rf_classifier.predict(X_new)
@@ -77,11 +112,12 @@ elif task == "Classification":
 elif task == "Clustering":
     st.subheader(f"Clustering Stock Data for META")
     
-    # Use the features for clustering
-    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
-    X = df[features]
+    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
+                'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
+                'VWAP', 'Daily_Return', 'Volatility']
     
     # Apply clustering
+    X = df[features]
     clusters = kmeans_model.predict(X)
     df['Cluster'] = clusters
     
