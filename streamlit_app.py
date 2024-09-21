@@ -72,7 +72,7 @@ def preprocess_data(df):
     scaler = MinMaxScaler()
     
     # Apply Min-Max scaling to the relevant features
-    num_cols = df.columns.drop(['Price_Up'])
+    num_cols = df.columns.drop(['Date', 'Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
 
     st.write("After Handling missing values")
