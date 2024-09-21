@@ -66,7 +66,7 @@ def preprocess_data(df):
     # Handle missing values
     df.bfill(inplace=True)
 
-    scaled_data = close_scaler.fit_transform(df['Close'])
+    scaled_data = close_scaler.fit_transform(df[['Close']])
 
     # Feature scaling
     scaler = MinMaxScaler()
