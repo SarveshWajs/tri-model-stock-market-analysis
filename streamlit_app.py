@@ -71,6 +71,10 @@ def preprocess_data(df):
     num_cols = df.columns.drop(['Date', 'Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
 
+    # Save the scaler for the 'Close' column to reverse scaling after prediction
+    close_scaler = MinMaxScaler()
+    df['Actual Close'] = close_scaler.fit_transform(df[['Close']])
+
     st.write("After Data Preprocessing")
     st.write(df.head())
     
