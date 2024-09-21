@@ -13,7 +13,7 @@ lin_reg_model = joblib.load('lin_reg_model.pkl')    # Regression model (Linear R
 kmeans_model = joblib.load('kmeans_model.pkl')      # Clustering model (KMeans)
 
 # Initialize the scaler
-scaler = MinMaxScaler()
+close_scaler = MinMaxScaler()
 
 # Sidebar options
 st.sidebar.header("Choose Task")
@@ -63,12 +63,12 @@ def preprocess_data(df):
     # Volatility: Difference between high and low price
     df['Volatility'] = df['High'] - df['Low']
 
-    # Save the 
-
     # Handle missing values
     df.bfill(inplace=True)
 
+    scaled_data = close_scaler.fit_transform(df['Close'])
     # Feature scaling
+    scaler = MinMaxScaler()
     # Apply Min-Max scaling to the relevant features
     num_cols = df.columns.drop(['Date', 'Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
@@ -91,7 +91,7 @@ if task == "Prediction":
     
     # Make a prediction
     predicted_price_scaled = lin_reg_model.predict(X_new)
-    predicted_price = scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
+    predicted_price = close_scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
     st.write(f"Predicted closing price for tomorrow: ${predicted_price[0]:.2f}")
 
 # Task 2: Classification - Price Movement Prediction
