@@ -12,6 +12,9 @@ rf_classifier = joblib.load('rf_model.pkl')         # Classification model (Rand
 lin_reg_model = joblib.load('lin_reg_model.pkl')    # Regression model (Linear Regression)
 kmeans_model = joblib.load('kmeans_model.pkl')      # Clustering model (KMeans)
 
+# Initialize the scaler
+scaler = MinMaxScaler()
+
 # Sidebar options
 st.sidebar.header("Choose Task")
 task = st.sidebar.selectbox("Select Task", ("Prediction", "Classification", "Clustering"))
@@ -66,9 +69,6 @@ def preprocess_data(df):
     df.bfill(inplace=True)
 
     # Feature scaling
-    # Initialize the scaler
-    scaler = MinMaxScaler()
-    
     # Apply Min-Max scaling to the relevant features
     num_cols = df.columns.drop(['Date', 'Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
@@ -90,8 +90,8 @@ if task == "Prediction":
     X_new = df[features].iloc[-1].values.reshape(1, -1)
     
     # Make a prediction
-    predicted_price = lin_reg_model.predict(X_new)
-   
+    predicted_price_scaled = lin_reg_model.predict(X_new)
+    predicted_price = scaler.inverse_transform(predicted_price_scaled)
     st.write(f"Predicted closing price for tomorrow: ${predicted_price[0]:.2f}")
 
 # Task 2: Classification - Price Movement Prediction
