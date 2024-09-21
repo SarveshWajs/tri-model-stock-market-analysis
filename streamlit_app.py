@@ -19,7 +19,7 @@ task = st.sidebar.selectbox("Select Task", ("Prediction", "Classification", "Clu
 # Function to get stock data for META from Yahoo Finance
 def get_meta_stock_data():
     # The ticker symbol for META (Facebook) is 'META'
-    df = yf.download('META', period='50d', interval='1d')  # Get the last 50 days of data
+    df = yf.download('META', period='9d', interval='1d')  # Get the last 50 days of data
     df.reset_index(inplace=True)
     return df
 
