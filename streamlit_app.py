@@ -26,7 +26,7 @@ def get_meta_stock_data():
 # Fetch latest META stock data
 df = get_meta_stock_data()
 st.write("Latest data for META (Facebook):")
-st.write(df)
+st.write(df.head())
 
 # Preprocess stock data for model usage
 def preprocess_data(df):
@@ -60,9 +60,6 @@ def preprocess_data(df):
     # Volatility: Difference between high and low price
     df['Volatility'] = df['High'] - df['Low']
 
-    st.write("Before Handling missing values")
-    st.write(df)
-
     # Handle missing values
     df.bfill(inplace=True)
 
@@ -74,8 +71,8 @@ def preprocess_data(df):
     num_cols = df.columns.drop(['Date', 'Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
 
-    st.write("After Handling missing values")
-    st.write(df)
+    st.write("After Data Preprocessing")
+    st.write(df.head())
     
     
     return df
