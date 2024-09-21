@@ -49,7 +49,7 @@ def preprocess_data(df):
     df['BB_Low'] = bb_indicator.bollinger_lband()
     
     # VWAP calculation (Cumulative sum of volume-weighted price / cumulative volume)
-    df['VWAP'] = (df['Close'] * df['Volume']).cumsum() / df['Volume'].cumsum()
+    df['VWAP'] = (df['Volume'] * (df['High'] + df['Low'] + df['Close']) / 3).cumsum() / df['Volume'].cumsum()
     
     # Price Up: Binary indicator for classification (1 if price is up, 0 if down)
     df['Price_Up'] = (df['Close'].shift(-1) > df['Close']).astype(int)
