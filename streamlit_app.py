@@ -64,7 +64,6 @@ def preprocess_data(df):
     st.write(df)
 
     # Handle missing values
-    df.ffill(inplace=True)
     df.bfill(inplace=True)
 
     # Feature scaling
