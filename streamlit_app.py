@@ -64,14 +64,12 @@ def preprocess_data(df):
     df = df.bfill(inplace=True)
     
     # Feature scaling
+    # Initialize the scaler
     scaler = MinMaxScaler()
-    df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
-        'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
-        'VWAP', 'Daily_Return', 'Volatility']] = scaler.fit_transform(
-        df[['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
-            'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
-            'VWAP', 'Daily_Return', 'Volatility']]
-    )
+    
+    # Apply Min-Max scaling to the relevant features
+    num_cols = df.columns.drop(['Price_Up'])
+    df[num_cols] = scaler.fit_transform(df[num_cols])
     
     return df
 
