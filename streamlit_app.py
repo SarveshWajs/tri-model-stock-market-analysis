@@ -60,13 +60,6 @@ def preprocess_data(df):
     # Volatility: Difference between high and low price
     df['Volatility'] = df['High'] - df['Low']
 
-    st.write("Before Handling missing values")
-    st.write(df)
-    # Handle missing values
-    df.ffill(inplace=True).bfill(inplace=True)
-
-    st.write("After Handling missing values")
-    st.write(df)
     # Feature scaling
     # Initialize the scaler
     scaler = MinMaxScaler()
@@ -74,6 +67,16 @@ def preprocess_data(df):
     # Apply Min-Max scaling to the relevant features
     num_cols = df.columns.drop(['Price_Up'])
     df[num_cols] = scaler.fit_transform(df[num_cols])
+    
+    st.write("Before Handling missing values")
+    st.write(df)
+    # Handle missing values
+    df.ffill(inplace=True)
+    df.bfill(inplace=True)
+
+    st.write("After Handling missing values")
+    st.write(df)
+    
     
     return df
 
