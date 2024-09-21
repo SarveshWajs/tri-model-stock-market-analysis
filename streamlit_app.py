@@ -28,8 +28,6 @@ df = get_meta_stock_data()
 st.write("Latest data for META (Facebook):")
 st.write(df.head())
 
-close_scaler = MinMaxScaler()
-
 # Preprocess stock data for model usage
 def preprocess_data(df):
     # Adding technical indicators and other features
@@ -77,11 +75,8 @@ def preprocess_data(df):
 
     st.write("After Data Preprocessing")
     st.write(df.head())
-    
-    # Save the scaler for the 'Close' column to reverse scaling after prediction
-    df['Actual Close'] = close_scaler.fit_transform(df[['Close']])
 
-    return df, close_scaler
+    return df
 
 # Preprocess the data
 df = preprocess_data(df)
@@ -95,10 +90,7 @@ if task == "Prediction":
     X_new = df[features].iloc[-1].values.reshape(1, -1)
     
     # Make a prediction
-    predicted_price_scaled = lin_reg_model.predict(X_new)
-    
-    # Reverse scaling to get the predicted price in the original range
-    predicted_price = close_scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
+    predicted_price = lin_reg_model.predict(X_new)
    
     st.write(f"Predicted closing price for tomorrow: ${predicted_price[0]:.2f}")
 
