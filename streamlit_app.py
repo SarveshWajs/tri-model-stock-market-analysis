@@ -61,7 +61,7 @@ def preprocess_data(df):
     df['Volatility'] = df['High'] - df['Low']
     
     # Handle missing values
-    df = df.bfill(inPlace=True)
+    df = df.bfill(inplace=True)
     
     # Feature scaling
     scaler = MinMaxScaler()
