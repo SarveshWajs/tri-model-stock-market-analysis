@@ -6,8 +6,8 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 
 # Load pre-trained models
-rf_classifier = joblib.load('rf_classifier_model.pkl')
-lin_reg_model = joblib.load('linear_reg_model.pkl')
+rf_classifier = joblib.load('rf_model.pkl')
+lin_reg_model = joblib.load('lin_reg_model.pkl')
 kmeans_model = joblib.load('kmeans_model.pkl')
 
 # Sidebar options
