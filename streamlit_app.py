@@ -6,27 +6,24 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 
 # Load pre-trained models
-rf_classifier = joblib.load('rf_model.pkl')
-lin_reg_model = joblib.load('lin_reg_model.pkl')
-kmeans_model = joblib.load('kmeans_model.pkl')
+rf_classifier = joblib.load('rf_model.pkl')         # Classification model (Random Forest)
+lin_reg_model = joblib.load('lin_reg_model.pkl')    # Regression model (Linear Regression)
+kmeans_model = joblib.load('kmeans_model.pkl')      # Clustering model (KMeans)
 
 # Sidebar options
 st.sidebar.header("Choose Task")
 task = st.sidebar.selectbox("Select Task", ("Prediction", "Classification", "Clustering"))
 
-# Function to get stock data from Yahoo Finance
-def get_stock_data(ticker):
-    df = yf.download(ticker, period='5d', interval='1d')  # Get the last 5 days of data
+# Function to get stock data for META from Yahoo Finance
+def get_meta_stock_data():
+    # The ticker symbol for META (Facebook) is 'META'
+    df = yf.download('META', period='5d', interval='1d')  # Get the last 5 days of data
     df.reset_index(inplace=True)
     return df
 
-# Get stock ticker input from the user
-st.sidebar.header("Stock Selection")
-ticker = st.sidebar.text_input("Enter the stock ticker (e.g., AAPL, META)", value="AAPL")
-
-# Fetch latest stock data
-df = get_stock_data(ticker)
-st.write(f"Latest data for {ticker}:")
+# Fetch latest META stock data
+df = get_meta_stock_data()
+st.write("Latest data for META (Facebook):")
 st.write(df)
 
 # Preprocess stock data for model usage
@@ -50,7 +47,7 @@ df = preprocess_data(df)
 
 # Task 1: Regression - Stock Price Prediction
 if task == "Prediction":
-    st.subheader(f"Stock Price Prediction for {ticker}")
+    st.subheader(f"Stock Price Prediction for META")
     features = ['Open', 'High', 'Low', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
     
     # Select the latest row for prediction
@@ -63,7 +60,7 @@ if task == "Prediction":
 
 # Task 2: Classification - Price Movement Prediction
 elif task == "Classification":
-    st.subheader(f"Price Movement Classification for {ticker}")
+    st.subheader(f"Price Movement Classification for META")
     
     # Assuming target is to classify Price Up (1) or Down (0)
     features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
@@ -78,7 +75,7 @@ elif task == "Classification":
 
 # Task 3: Clustering - Grouping Stock Data
 elif task == "Clustering":
-    st.subheader(f"Clustering Stock Data for {ticker}")
+    st.subheader(f"Clustering Stock Data for META")
     
     # Use the features for clustering
     features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'SMA_5', 'SMA_20', 'Volatility']
@@ -96,5 +93,5 @@ elif task == "Clustering":
     plt.scatter(df['Close'], df['Volume'], c=clusters, cmap='viridis')
     plt.xlabel('Close Price')
     plt.ylabel('Volume')
-    plt.title(f'Clustering of {ticker} Stock Data')
+    plt.title(f'Clustering of META Stock Data')
     st.pyplot(plt)
