@@ -79,7 +79,7 @@ def preprocess_data(df):
     st.write(df.head())
     
     # Save the scaler for the 'Close' column to reverse scaling after prediction
-    df['Close'] = close_scaler.fit_transform(df[['Close']])
+    df['Actual Close'] = close_scaler.fit_transform(df[['Close']])
 
     return df, close_scaler
 
