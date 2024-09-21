@@ -67,6 +67,7 @@ def preprocess_data(df):
     df.bfill(inplace=True)
 
     scaled_data = close_scaler.fit_transform(df['Close'])
+
     # Feature scaling
     scaler = MinMaxScaler()
     # Apply Min-Max scaling to the relevant features
@@ -91,7 +92,7 @@ if task == "Prediction":
     
     # Make a prediction
     predicted_price_scaled = lin_reg_model.predict(X_new)
-    predicted_price = close_scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
+    predicted_price = close_scaler.inverse_transform(predicted_price_scaled)
     st.write(f"Predicted closing price for tomorrow: ${predicted_price[0]:.2f}")
 
 # Task 2: Classification - Price Movement Prediction
