@@ -114,9 +114,7 @@ elif task == "Classification":
 elif task == "Clustering":
     st.subheader(f"Clustering Stock Data for META")
     
-    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Lag_1', 'Lag_3', 'Lag_7', 
-                'SMA_5', 'SMA_20', 'EMA_20', 'RSI_14', 'BB_High', 'BB_Low', 
-                'VWAP', 'Daily_Return', 'Volatility']
+    features = ['Open', 'High', 'Low', 'Close', 'Volume', 'SMA_5', 'SMA_20', 'Lag_1', 'Volatility']
     
     # Apply clustering
     X = df[features]
