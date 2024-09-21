@@ -92,7 +92,6 @@ if task == "Prediction":
     
     # Make a prediction
     predicted_price_scaled = lin_reg_model.predict(X_new)
-    st.write(predicted_price_scaled.reshape(-1, 1))
     predicted_price = close_scaler.inverse_transform(predicted_price_scaled.reshape(-1, 1))
     st.write(f"Predicted closing price for tomorrow: ${predicted_price[0][0]:.2f}")
 
