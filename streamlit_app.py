@@ -63,7 +63,7 @@ def preprocess_data(df):
     st.write("Before Handling missing values")
     st.write(df)
     # Handle missing values
-    df.bfill(inplace=True)
+    df.ffill(inplace=True).bfill(inplace=True)
 
     st.write("After Handling missing values")
     st.write(df)
