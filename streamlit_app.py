@@ -60,7 +60,7 @@ def preprocess_data(df):
     # Volatility: Difference between high and low price
     df['Volatility'] = df['High'] - df['Low']
 
-    st.write("Before Handling missing values)
+    st.write("Before Handling missing values")
     st.write(df)
     # Handle missing values
     df = df.bfill(inplace=True)
